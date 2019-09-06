@@ -1,4 +1,5 @@
-
+var time;  
+var counter = 0;
 // - create object with all the questions
     // - each question will have an index, the actual question itself, possible answers, and the correct answer.
 var questions = [
@@ -27,7 +28,7 @@ var questions = [
         used: false
     },
     {
-        test: "What kind of animal is the horned toad?",
+        text: "What kind of animal is the horned toad?",
         answers: ["Lizard", "Toad", "Frog", "Snake"],
         correctAnswer: "Lizard",
         used: false
@@ -40,7 +41,7 @@ var questions = [
     },
     {
         text: "What kind of animal is the firefly?",
-        answers: ["Winged Beetle", "Flying Any", "Fly", "Wasp"],
+        answers: ["Winged Beetle", "Flying Ant", "Fly", "Wasp"],
         correctAnswer: "Winged Beetle",
         used: false
     },
@@ -70,40 +71,85 @@ var questions = [
 - the correct/incorrect message will render for 5 seconds and the correct answer will render regardless
     
 */
+$(document).ready(function() {
 
-function shuffle(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex;
-  
-    // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
-  
-      // Pick a remaining element...
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-  
-      // And swap it with the current element.
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
-    }
-  
-    return array;
-  }
 
-function startGame() {
-    i = 0
-    shuffle(questions[i].answers);
-        
-    $(".question").html("<h2>", { text: questions[i].text});
-    arr = shuffle(arr);
-    $.each(questions[i].answers, function(i, ans){
-        console.log(ans)
-        $(".answers").append("<input value='" + ans + "'>", { type: "radio" })
-    })
-}
 
-shuffle(questions);
-startGame();
+    function shuffle(array) {
+        var currentIndex = array.length, temporaryValue, randomIndex;
+
+        // While there remain elements to shuffle...
+        while (0 !== currentIndex) {
+
+            // Pick a remaining element...
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+
+            // And swap it with the current element.
+            temporaryValue = array[currentIndex];
+            array[currentIndex] = array[randomIndex];
+            array[randomIndex] = temporaryValue;
+        };
+
+        return array;
+    };
+
+    function newQuestion() {
+        roundTimer();
+        $(".question").html("<h2>" + questions[counter].text + "</h2>");
+        arr = questions[counter].answers;
+        arr = shuffle(arr);
+        for(var i = 0; i < arr.length; i++){
+            var ans = questions[counter].answers[i];
+            $("<input type='radio' value='" + ans + "' name='answers'/>" + ans+  "<br>").appendTo(".answerForm");
+        };
+        $("<input type='submit' class='btn btn-info submit' value='Submit' />" ).appendTo(".answerForm");
+    };
+
+    function clearScreen() {
+        $(".question").empty();
+        $(".answerForm").empty();
+        $(".timer").empty();
+    };
+
+    function roundTimer() {
+        time = 10;
+        var interval = setInterval(function() {
+            time--;
+            if(time >= 0){
+                $("#timeLeft").html(time);
+            }
+            if(time == 0){
+                clearInterval(time);
+                $(".timer").html("<h1>Time Is Up</h1>");
+            }
+        }, 1000);
+      };
+
+    function startGame() {
+        newQuestion();
+        clearInterval(time);
+        $(document).on('click', ".submit", function(e){
+            e.preventDefault();
+            var selectedAnswer = $("input[name='answers']:checked").val();
+            console.log(questions[counter].correctAnswer);
+            console.log(selectedAnswer);
+            if(questions[counter].correctAnswer == selectedAnswer){
+                counter++;
+                console.log("Correct!");
+                setTimeout(function(){
+                    clearScreen()
+                    newQuestion()
+                }, 5000);
+            } else {
+
+            }
+        });
+    };
+
+    shuffle(questions);
+    startGame();
+});
 /* To Do:
 - get value of radio checked
 - $("input[name='gender']:checked")

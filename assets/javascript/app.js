@@ -122,6 +122,7 @@ $(document).ready(function() {
             if(time == 0){
                 clearInterval(time);
                 $(".timer").html("<h1>Time Is Up</h1>");
+                
             }
         }, 1000);
       };

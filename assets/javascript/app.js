@@ -1,5 +1,6 @@
 var time;  
 var counter = 0;
+var interval1;
 // - create object with all the questions
     // - each question will have an index, the actual question itself, possible answers, and the correct answer.
 var questions = [
@@ -95,10 +96,12 @@ $(document).ready(function() {
     };
 
     function newQuestion() {
+        $(".timer").html("Time Remaining: <span id='timeLeft'></span>")
         roundTimer();
         $(".question").html("<h2>" + questions[counter].text + "</h2>");
         arr = questions[counter].answers;
         arr = shuffle(arr);
+        
         for(var i = 0; i < arr.length; i++){
             var ans = questions[counter].answers[i];
             $("<input type='radio' value='" + ans + "' name='answers'/>" + ans+  "<br>").appendTo(".answerForm");
@@ -114,15 +117,23 @@ $(document).ready(function() {
 
     function roundTimer() {
         time = 10;
-        var interval = setInterval(function() {
+        interval1 = setInterval(function() {
             time--;
             if(time >= 0){
                 $("#timeLeft").html(time);
             }
             if(time == 0){
-                clearInterval(time);
+                clearInterval(interval1);
+                clearScreen();
+                $(".answerForm").text("Correct answer is: " + questions[counter].correctAnswer)
+                counter++;
                 $(".timer").html("<h1>Time Is Up</h1>");
+                setTimeout(function(){
+                    clearScreen()
+                    newQuestion()
+                }, 5000);
                 
+
             }
         }, 1000);
       };

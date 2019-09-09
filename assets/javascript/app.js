@@ -98,8 +98,16 @@ $(document).ready(function() {
 
     function newQuestion() {
         if(counter >= questions.length) {
-            $(".answers").html("<h2>Game Over</h2>");
-            $(".answers").append("<p>Correct Answers: " + score + "</p>");
+            $(".answerForm").html("<h2>Game Over</h2>");
+            $(".answerForm").append("<p>Correct Answers: " + score + "</p>");
+            $("<input type='submit' class='btn btn-light replay' value='Play Again' />" ).appendTo(".answerForm");
+            $(document).on('click', ".replay", function(e){
+                e.preventDefault();
+                counter = 0;
+                score = 0;
+                clearScreen();
+                startGame();
+            });
         } else {
             $(".timer").html("Time Remaining: <span id='timeLeft'></span>")
             roundTimer();
@@ -107,15 +115,19 @@ $(document).ready(function() {
             arr = questions[counter].answers;
             arr = shuffle(arr);
             
-            for(var i = 0; i < arr.length; i++){
-                var ans = questions[counter].answers[i];
-                $("<input type='radio' value='" + ans + "' name='answers'/>" + ans+  "<br>").appendTo(".answerForm");
-            };
-            $(".answerForm").css({"font-size": "1.5rem"})
-            $("input[type='radio']").css({"margin-right": "1%", "margin-top": "-1px", "vertical-align": "middle"})
-            $("<input type='submit' class='btn btn-info submit' value='Submit' />" ).appendTo(".answerForm");
-            $(".btn").css({"background-color":"#AE89B3", "color": "#EEFFDE", "margin-top": "2%"})
+            answerPop();
         };
+    };
+
+    function answerPop() {
+        for(var i = 0; i < arr.length; i++){
+            var ans = questions[counter].answers[i];
+            $("<input type='radio' value='" + ans + "' name='answers'/>" + ans+  "<br>").appendTo(".answerForm");
+        };
+        $(".answerForm").css({"font-size": "1.5rem"})
+        $("input[type='radio']").css({"margin-right": "1%", "margin-top": "-1px", "vertical-align": "middle"})
+        $("<input type='submit' class='btn btn-info submit' value='Submit' />" ).appendTo(".answerForm");
+        $(".btn").css({"background-color":"#AE89B3", "color": "#EEFFDE", "margin-top": "2%"})
     };
 
     function clearScreen() {
@@ -187,7 +199,3 @@ $(document).ready(function() {
     shuffle(questions);
     startGame();
 });
-/* To Do:
-- get value of radio checked
-- $("input[name='gender']:checked")
-*/

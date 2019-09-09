@@ -1,0 +1,19 @@
+body {
+    background-image: url("../images/VeniceBlue.jpg");
+    color: #EEFFDE;
+}
+
+#mainTitle {
+    text-align: center;
+    color: #95B378;
+    font-size: 4rem;
+}
+
+.timer {
+    font-size: 1.5rem;
+    color: #E2C8E6;
+}
+
+.question {
+    color: #FBDEFF;
+}

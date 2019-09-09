@@ -1,6 +1,7 @@
 var time;  
 var counter = 0;
 var interval1;
+var score = 0;
 // - create object with all the questions
     // - each question will have an index, the actual question itself, possible answers, and the correct answer.
 var questions = [
@@ -96,17 +97,25 @@ $(document).ready(function() {
     };
 
     function newQuestion() {
-        $(".timer").html("Time Remaining: <span id='timeLeft'></span>")
-        roundTimer();
-        $(".question").html("<h2>" + questions[counter].text + "</h2>");
-        arr = questions[counter].answers;
-        arr = shuffle(arr);
-        
-        for(var i = 0; i < arr.length; i++){
-            var ans = questions[counter].answers[i];
-            $("<input type='radio' value='" + ans + "' name='answers'/>" + ans+  "<br>").appendTo(".answerForm");
+        if(counter >= questions.length) {
+            $(".answers").html("<h2>Game Over</h2>");
+            $(".answers").append("<p>Correct Answers: " + score + "</p>");
+        } else {
+            $(".timer").html("Time Remaining: <span id='timeLeft'></span>")
+            roundTimer();
+            $(".question").html("<h2>" + questions[counter].text + "</h2>");
+            arr = questions[counter].answers;
+            arr = shuffle(arr);
+            
+            for(var i = 0; i < arr.length; i++){
+                var ans = questions[counter].answers[i];
+                $("<input type='radio' value='" + ans + "' name='answers'/>" + ans+  "<br>").appendTo(".answerForm");
+            };
+            $(".answerForm").css({"font-size": "1.5rem"})
+            $("input[type='radio']").css({"margin-right": "1%", "margin-top": "-1px", "vertical-align": "middle"})
+            $("<input type='submit' class='btn btn-info submit' value='Submit' />" ).appendTo(".answerForm");
+            $(".btn").css({"background-color":"#AE89B3", "color": "#EEFFDE", "margin-top": "2%"})
         };
-        $("<input type='submit' class='btn btn-info submit' value='Submit' />" ).appendTo(".answerForm");
     };
 
     function clearScreen() {
@@ -125,7 +134,8 @@ $(document).ready(function() {
             if(time == 0){
                 clearInterval(interval1);
                 clearScreen();
-                $(".answerForm").text("Correct answer is: " + questions[counter].correctAnswer)
+                $(".answerForm").text("Correct answer is: " + questions[counter].correctAnswer).css("font-size", "2rem")
+
                 counter++;
                 $(".timer").html("<h1>Time Is Up</h1>");
                 setTimeout(function(){
@@ -143,19 +153,34 @@ $(document).ready(function() {
         clearInterval(time);
         $(document).on('click', ".submit", function(e){
             e.preventDefault();
-            var selectedAnswer = $("input[name='answers']:checked").val();
-            console.log(questions[counter].correctAnswer);
-            console.log(selectedAnswer);
-            if(questions[counter].correctAnswer == selectedAnswer){
-                counter++;
-                console.log("Correct!");
-                setTimeout(function(){
-                    clearScreen()
-                    newQuestion()
-                }, 5000);
+            if($(".answerForm").find("input[name='answers']:checked").length == 0){
+                $(".answerForm").append("<br><span style='color:red'>Please select an answer</span>");
             } else {
-
-            }
+                var selectedAnswer = $("input[name='answers']:checked").val();
+                console.log(questions[counter].correctAnswer);
+                console.log(selectedAnswer);
+                clearInterval(interval1);
+                if(questions[counter].correctAnswer == selectedAnswer){
+                    $(".timer").html("<h1>Correct!</h1>")
+                    $(".question").text("Correct answer is: " + questions[counter].correctAnswer).css("font-size", "2rem")
+                    $(".answerForm").empty()
+                    counter++;
+                    score++;
+                    console.log("Correct!");
+                    setTimeout(function(){
+                        clearScreen()
+                        newQuestion()
+                    }, 5000);
+                } else {
+                    $(".timer").html("<h1>Incorrect</h1>")
+                    $(".answerForm").text("Correct answer is: " + questions[counter].correctAnswer).css("font-size", "2rem")
+                    counter++;
+                    setTimeout(function(){
+                        clearScreen()
+                        newQuestion()
+                    }, 5000);
+                };
+            };
         });
     };
 

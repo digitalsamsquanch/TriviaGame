@@ -1,3 +1,3 @@
 # TriviaGame
 
-https://digitalsamsquanch.github.io/TriviaGame/
+https://moroseCode.github.io/TriviaGame/
